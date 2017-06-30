@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { fetchUsers } from '../actions';
+import { fetchUsers, selectUser } from '../actions';
 
 class UsersList extends Component {
     componentDidMount() {
@@ -10,11 +10,15 @@ class UsersList extends Component {
         });
     };
 
+    onSelectUser(user) {
+        this.props.selectUser(user);
+    };
+
     renderUsers(users) {
         if(!users) return <i>Loading...</i>
         return (
             <ul>
-                {users.map(user => <li key={user.name}>{user.name}</li>)}
+                {users.map(user => <li onClick={this.onSelectUser.bind(this, user)} key={user.name}>{user.name}</li>)}
             </ul>
         );
     };
@@ -34,7 +38,10 @@ function mapStateToProps({ users }) {
 };
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ fetchUsers }, dispatch);
+    return bindActionCreators({ 
+        fetchUsers,
+        selectUser
+    }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UsersList);
